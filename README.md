@@ -11,6 +11,7 @@ CodeIgniter 视图继承类库
 
 ### 例子
 
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,3 +22,4 @@ CodeIgniter 视图继承类库
     <h1>Welcome to <# block title #>CodeIgniter<# /block #>!</h1>
 </body>
 </html>
+```
