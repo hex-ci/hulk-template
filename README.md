@@ -49,3 +49,26 @@ class Welcome extends CI_Controller {
     }
 }
 ```
+
+### 视图继承语法
+
+实现视图继承的标签采用 <# 开头，#> 结尾。例如： <# block #>
+
+目前有 2 个标签：extends 和 block
+
+#### extends 标签语法：
+
+<# extends 视图路径 #>
+
+例如 <# extends welcome/test #>
+
+这里指的是从 `./application/views/welcome/test.php` 这个视图继承。
+
+注意：extends 标签必须在视图文件首行首字母位置。另外这个标签不需要结束标签。
+
+#### block 标签语法：
+
+<# block 名称 #>内容...<# /block #>
+
+在父视图中使用 block 代表定义一个名为“名称”的 block。
+在子视图中使用 block 代表替换父视图中同名的 block。
