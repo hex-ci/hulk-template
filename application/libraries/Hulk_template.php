@@ -8,7 +8,7 @@
  * @subpackage  Libraries
  * @author      Hex
  * @category    Template
- * @link        http://codeigniter.org.cn
+ * @link        http://codeigniter.org.cn/forums/thread-19488-1-1.html
  */
 
 class Hulk_template {
