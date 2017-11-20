@@ -77,7 +77,26 @@ class Welcome extends CI_Controller {
 
 ### parent 标签
 
+```
+<# block 名称 #>
+  <# parent #>
+
+  内容...
+<# /block #>
+```
+
+`parent` 标签只能在 `block` 标签中使用，功能是把父模板相同 block 名称的内容放到当前 block 中 parent 所在位置。
+
 ### child 标签
+
+```
+<# block 名称 #>
+  <# child #>
+
+  内容...
+<# /block #>
+
+`child` 标签只能在 `block` 标签中使用，功能是把子模板相同 block 名称的内容放到当前 block 中 child 所在位置。
 
 ### slot 标签
 
