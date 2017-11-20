@@ -300,7 +300,7 @@ class Hulk_template {
         $blocks = array_merge($this->prev_current_blocks, $this->current_blocks);
 
         $content = preg_replace_callback($pattern, function($match) use ($blocks) {
-          return isset($blocks[$match[2]]) ? $blocks[$match[2]] : '';
+          return isset($blocks[$match[2]]) ? $this->remove_command($blocks[$match[2]]) : '';
         }, $content);
 
         return $content;
