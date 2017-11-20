@@ -16,7 +16,7 @@ class Hulk_template {
     private $l_delim = '<#';
     private $r_delim = '#>';
     private $ext = '.php';
-    private $version = '0.1';
+    private $version = '0.3';
 
     public function __construct()
     {
@@ -207,8 +207,13 @@ class Hulk_template {
 
         if ($name !== '' && isset($this->current_blocks[$name]))
         {
+            $this->current_blocks[$name] = $this->command_use($this->current_blocks[$name], $match[4]);
+            $this->current_blocks[$name] = $this->command_call($this->current_blocks[$name], $match[4]);
+
             $this->current_blocks[$name] = $this->command_parent($this->current_blocks[$name], $match[4]);
             $this->current_blocks[$name] = $this->command_child($this->current_blocks[$name], $match[4]);
+
+            $this->current_blocks[$name] = $this->command_slot($this->current_blocks[$name], $match[4]);
 
             return $match[1].$this->current_blocks[$name].$match[5];
         }
@@ -237,6 +242,92 @@ class Hulk_template {
         return $content;
     }
 
+    private function command_slot($content, $parent_content)
+    {
+        $pattern = $this->create_matcher('slot');
+
+        if (!preg_match($pattern, $parent_content))
+        {
+          return $content;
+        }
+
+        preg_match_all($pattern, $content, $matches);
+
+        $blocks = [];
+
+        foreach ($matches[2] as $key => $value)
+        {
+          $blocks[$value] = $matches[3][$key];
+        }
+
+        if (preg_match($pattern, $content))
+        {
+          $plain_content = preg_replace($pattern, '', $content);
+
+          $content = preg_replace_callback($pattern, function($match) use ($blocks, $plain_content) {
+            if (empty($match[2]))
+            {
+              return $plain_content;
+            }
+            else
+            {
+              return isset($blocks[$match[2]]) ? $blocks[$match[2]] : $match[3];
+            }
+          }, $parent_content);
+        }
+        else
+        {
+          // 判断是否有默认插槽
+          $simple_pattern = $this->create_matcher('slot', true);
+
+          if (preg_match($simple_pattern, $parent_content))
+          {
+            $content = preg_replace($simple_pattern, $content, $parent_content);
+          }
+        }
+
+        return $content;
+    }
+
+    private function command_use($content, $parent_content)
+    {
+        $pattern = $this->create_open_matcher('use');
+
+        $content = preg_replace_callback($pattern, function($match) {
+          return isset($this->current_blocks[$match[2]]) ? $this->current_blocks[$match[2]] : '';
+        }, $content);
+
+        return $content;
+    }
+
+    private function command_call($content, $parent_content)
+    {
+        $pattern = $this->create_matcher('call');
+        $pattern_slot = $this->create_matcher('slot');
+
+        $content = preg_replace_callback($pattern, function($match) use ($pattern_slot) {
+          if (!isset($this->current_blocks[$match[2]]))
+          {
+            return '';
+          }
+
+          preg_match_all($pattern_slot, $match[3], $matches);
+
+          $blocks = [];
+
+          foreach ($matches[2] as $key => $value)
+          {
+            $blocks[$value] = $matches[3][$key];
+          }
+
+          return preg_replace_callback($pattern_slot, function($match) use ($blocks) {
+            return isset($blocks[$match[2]]) ? $blocks[$match[2]] : $match[3];
+          }, $this->current_blocks[$match[2]]);
+        }, $content);
+
+        return $content;
+    }
+    
     private function remove_command($content)
     {
         $pattern = $this->create_open_matcher('.+?');
@@ -246,10 +337,16 @@ class Hulk_template {
         return $content;
     }
 
+    private function create_matcher($function, $no_param = false)
+    {
+        return '~' . preg_quote($this->l_delim, '~') . '\s*('. $function .')' . ($no_param ? '' : '(?:\s+([^#]+?)|\s*)') . '\s*' . preg_quote($this->r_delim, '~') .
+            '(?:\r?\n)?(.*?)'.preg_quote($this->l_delim, '~') . '\s*/' . $function . '\s*'. preg_quote($this->r_delim, '~') . '(?:\r?\n)?~s';
+    }
+    
     private function create_matcher($function)
     {
         return '~' . preg_quote($this->l_delim, '~') . '\s*('. $function .')(?:\s+([^#]+?)|\s*)\s*' . preg_quote($this->r_delim, '~') .
-                        '(?:\r?\n)?(.*?)'.preg_quote($this->l_delim, '~') . '\s*/' . $function . '\s*'. preg_quote($this->r_delim, '~') . '(?:\r?\n)?~s';
+            '(?:\r?\n)?(.*?)'.preg_quote($this->l_delim, '~') . '\s*/' . $function . '\s*'. preg_quote($this->r_delim, '~') . '(?:\r?\n)?~s';
     }
 
     private function create_open_matcher($function)
@@ -260,9 +357,8 @@ class Hulk_template {
     private function create_plain_matcher($function)
     {
         return '~(' . preg_quote($this->l_delim, '~') . '\s*('. $function .')(?:\s+([^#]+?)|\s*)\s*' . preg_quote($this->r_delim, '~') .
-                        '(?:\r?\n)?)(.*?)('.preg_quote($this->l_delim, '~') . '\s*/' . $function . '\s*'. preg_quote($this->r_delim, '~') . '(?:\r?\n)?)~s';
+            '(?:\r?\n)?)(.*?)('.preg_quote($this->l_delim, '~') . '\s*/' . $function . '\s*'. preg_quote($this->r_delim, '~') . '(?:\r?\n)?)~s';
     }
-
 
 
     // --------------------------------------------------------------------
