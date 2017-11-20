@@ -101,6 +101,44 @@ class Welcome extends CI_Controller {
 
 ### slot 标签
 
+```
+<# block 名称 #>
+  <# slot 插槽名称 #>
+    内容
+  <# /slot #>
+
+  内容...
+<# /block #>
+```
+
+`slot` 标签只能在 `block` 标签中使用。
+
+`slot` 标签是用于在父模板中定义一些插槽位置，子模板会替换父模板相同插槽名称所在位置的内容。
+
 ### call 标签
 
+```
+<# block 名称 #>
+  <# call 其它block名称 #>
+    <# slot 插槽名称 #>
+      内容
+    <# /slot #>
+  <# /call #>
+
+  内容...
+<# /block #>
+```
+
+`call` 用于把当前文件其它 block 名称的内容，替换 call 所在位置的内容。其中 `slot` 的意义与上节一样，会替换相应的内容。
+
 ### use 标签
+
+```
+<# block 名称 #>
+  <# use 其它block名称 #>
+
+  内容...
+<# /block #>
+```
+
+`use` 是简化版的 `call`，如果不需要替换 `slot` 的内容，可以直接使用 `use`。
