@@ -53,7 +53,7 @@ class Welcome extends CI_Controller {
 
 实现视图继承的标签采用 <# 开头，#> 结尾。例如：`<# block #>`
 
-### extends 标签语法：
+### extends 标签
 
 <# extends 视图路径 #>
 
@@ -63,7 +63,7 @@ class Welcome extends CI_Controller {
 
 注意：extends 标签必须在视图文件首行首字母位置。另外这个标签不需要结束标签。
 
-### block 标签语法：
+### block 标签
 
 <# block 名称 #>内容...<# /block #>
 
@@ -71,12 +71,12 @@ class Welcome extends CI_Controller {
 
 在子视图中使用 block 代表替换父视图中同名的 block。
 
-### parent 标签语法：
+### parent 标签
 
-### child 标签语法：
+### child 标签
 
-### slot 标签语法：
+### slot 标签
 
-### call 标签语法：
+### call 标签
 
-### use 标签语法：
+### use 标签
