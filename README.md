@@ -1,15 +1,14 @@
-CodeIgniter 视图继承类库
-=============
+# CodeIgniter 视图继承类库
 
  为 CodeIgniter 框架增加视图继承功能，不改变原有视图编写方式，无缝增加视图继承功能。
 
-### 安装方法
+## 安装方法
 
 1. 把 `Hulk_template.php` 放到 `./application/libraries` 目录下
 2. 创建目录 `./application/third_party/hulk_template/views`，如果目录不存在则要自己手动逐级创建。
 3. 把 `./application/third_party/hulk_template/views` 目录设为可写，Linux 下一定要保证 Apache 或 Nginx 对这个目录可写。
 
-### 例子
+## 例子
 
 父视图 ./application/views/parent_message.php :
 
@@ -50,13 +49,13 @@ class Welcome extends CI_Controller {
 }
 ```
 
-### 视图继承语法
+## 视图继承语法
 
 实现视图继承的标签采用 <# 开头，#> 结尾。例如： <# block #>
 
 目前有 2 个标签：extends 和 block
 
-#### extends 标签语法：
+### extends 标签语法：
 
 <# extends 视图路径 #>
 
@@ -66,7 +65,7 @@ class Welcome extends CI_Controller {
 
 注意：extends 标签必须在视图文件首行首字母位置。另外这个标签不需要结束标签。
 
-#### block 标签语法：
+### block 标签语法：
 
 <# block 名称 #>内容...<# /block #>
 
@@ -74,12 +73,12 @@ class Welcome extends CI_Controller {
 
 在子视图中使用 block 代表替换父视图中同名的 block。
 
-#### parent 标签语法：
+### parent 标签语法：
 
-#### child 标签语法：
+### child 标签语法：
 
-#### slot 标签语法：
+### slot 标签语法：
 
-#### call 标签语法：
+### call 标签语法：
 
-#### use 标签语法：
+### use 标签语法：
