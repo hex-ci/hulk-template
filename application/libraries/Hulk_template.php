@@ -24,7 +24,9 @@ class Hulk_template {
         $this->dest_path = APPPATH.'third_party/hulk_template/';
 
         $this->depth = 0;
-        $this->templates = array();
+        $this->templates = [];
+        $this->current_blocks = [];
+        $this->prev_current_blocks = [];
     }
 
     public function parse($name, $data = array(), $return = FALSE)
@@ -175,6 +177,8 @@ class Hulk_template {
     {
         $pattern = $this->create_plain_matcher('block');
 
+        $this->prev_current_blocks = $this->current_blocks;
+
         $this->current_blocks = $blocks;
 
         $content = preg_replace_callback($pattern, array(&$this, 'callback_parent_block'), $content);
@@ -293,8 +297,10 @@ class Hulk_template {
     {
         $pattern = $this->create_open_matcher('use');
 
-        $content = preg_replace_callback($pattern, function($match) {
-          return isset($this->current_blocks[$match[2]]) ? $this->current_blocks[$match[2]] : '';
+        $blocks = array_merge($this->prev_current_blocks, $this->current_blocks);
+
+        $content = preg_replace_callback($pattern, function($match) use ($blocks) {
+          return isset($blocks[$match[2]]) ? $blocks[$match[2]] : '';
         }, $content);
 
         return $content;
@@ -305,15 +311,28 @@ class Hulk_template {
         $pattern = $this->create_matcher('call');
         $pattern_slot = $this->create_matcher('slot');
 
-        $content = preg_replace_callback($pattern, function($match) use ($pattern_slot) {
-          if (!isset($this->current_blocks[$match[2]]))
+        $blocks_content = array_merge($this->prev_current_blocks, $this->current_blocks);
+
+        $content = preg_replace_callback($pattern, function($match) use ($pattern_slot, $blocks_content) {
+          $params = preg_split('|\s+|', $match[2], 2);
+
+          $name = $params[0];
+
+          if (!isset($blocks_content[$name]))
           {
             return '';
           }
 
-          preg_match_all($pattern_slot, $match[3], $matches);
-
           $blocks = [];
+
+          preg_match_all('|(\S+?)="(.+?)"|', $params[1], $matches, PREG_SET_ORDER);
+
+          foreach ($matches as $item)
+          {
+            $blocks[$item[1]] = $item[2];
+          }
+
+          preg_match_all($pattern_slot, $match[3], $matches);
 
           foreach ($matches[2] as $key => $value)
           {
@@ -322,7 +341,7 @@ class Hulk_template {
 
           return preg_replace_callback($pattern_slot, function($match) use ($blocks) {
             return isset($blocks[$match[2]]) ? $blocks[$match[2]] : $match[3];
-          }, $this->current_blocks[$match[2]]);
+          }, $blocks_content[$name]);
         }, $content);
 
         return $content;
