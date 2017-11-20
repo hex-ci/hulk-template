@@ -129,7 +129,7 @@ class Welcome extends CI_Controller {
 <# /block #>
 ```
 
-`call` 用于把当前文件其它 block 名称的内容，替换 call 所在位置的内容。其中 `slot` 的意义与上节一样，会替换相应的内容。
+`call` 用于把当前文件其它 block 名称（支持最近一级父模板）的内容，替换 call 所在位置的内容。其中 `slot` 的意义与上节一样，会替换相应的内容。
 
 ### use 标签
 
