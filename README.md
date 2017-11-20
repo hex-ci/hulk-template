@@ -73,3 +73,9 @@ class Welcome extends CI_Controller {
 在父视图中使用 block 代表定义一个名为“名称”的 block。
 
 在子视图中使用 block 代表替换父视图中同名的 block。
+
+#### slot 标签语法：
+
+#### call 标签语法：
+
+#### use 标签语法：
