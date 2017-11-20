@@ -95,6 +95,7 @@ class Welcome extends CI_Controller {
 
   内容...
 <# /block #>
+```
 
 `child` 标签只能在 `block` 标签中使用，功能是把子模板相同 block 名称的内容放到当前 block 中 child 所在位置。
 
