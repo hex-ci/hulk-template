@@ -51,9 +51,7 @@ class Welcome extends CI_Controller {
 
 ## 视图继承语法
 
-实现视图继承的标签采用 <# 开头，#> 结尾。例如： <# block #>
-
-目前有 2 个标签：extends 和 block
+实现视图继承的标签采用 <# 开头，#> 结尾。例如：`<# block #>`
 
 ### extends 标签语法：
 
